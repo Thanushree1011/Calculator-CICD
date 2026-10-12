@@ -1,0 +1,23 @@
+
+name: Calculator CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: Build Docker Image and Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t calculator .
+
+      - name: Run unit tests inside Docker
+        run: docker run --rm calculator
