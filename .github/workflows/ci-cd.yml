@@ -60,7 +60,7 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ap-south-1
-          debug: true1
+          debug: true
 
       # Step 8: Verify AWS authentication
       - name: Verify AWS identity
