@@ -1,0 +1,17 @@
+# Python generated files
+__pycache__/
+*.py[cod]
+
+# SAM build artifacts
+.aws-sam/
+
+# Virtual environments
+.venv/
+venv/
+
+# Environment variables and secrets
+.env
+.env.*
+
+# Keep example environment files if needed
+!.env.example
