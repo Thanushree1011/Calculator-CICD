@@ -16,44 +16,49 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout source code
       - name: Checkout source code
         uses: actions/checkout@v4
 
+      # Step 2: Set up Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
+      # Step 3: Run unit tests on GitHub Actions runner
       - name: Run unit tests
         run: python -m unittest -v
 
+      # Step 4: Build Docker image
       - name: Build Docker image
-        run: docker build -t calculator .
+        run: docker build -t calculator:latest .
 
+      # Step 5: Run unit tests inside Docker container
       - name: Run tests inside Docker
-        run: docker run --rm calculator
+        run: docker run --rm calculator:latest
 
+      # Step 6: Set up AWS SAM CLI
       - name: Set up AWS SAM CLI
         uses: aws-actions/setup-sam@v2
 
+      # Step 7: Configure AWS credentials using GitHub OIDC
       - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ap-south-1
 
+      # Step 8: Verify AWS authentication
       - name: Verify AWS identity
         run: aws sts get-caller-identity
 
+      # Step 9: Validate SAM template
+      - name: Validate SAM template
+        run: sam validate --lint
+
+      # Step 10: Build SAM application
       - name: Build SAM application
         run: sam build
 
-      - name: Deploy SAM application
-        run: >
-          sam deploy
-          --stack-name calculator-stack
-          --region ap-south-1
-          --resolve-s3
-          --capabilities CAPABILITY_IAM
-          --no-confirm-changeset
-          --no-fail-on-empty-changeset
+      # Step 11: Deploy application to AWS
