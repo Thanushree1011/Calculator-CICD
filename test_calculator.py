@@ -1,6 +1,6 @@
 
 import unittest
-from app import add, subtract, multiply, divide
+from calculator import add, subtract, multiply, divide
 
 
 class TestCalculator(unittest.TestCase):
