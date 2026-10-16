@@ -1,92 +1,34 @@
-name: Calculator CI/CD
+
+name: Calculator CI
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
-permissions:
-  contents: read
-  id-token: write
-
 jobs:
-  build-test-deploy:
-    name: Build, Test, and Deploy
+  test:
+    name: Test Calculator
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout source code
       - name: Checkout source code
         uses: actions/checkout@v4
 
-      # Step 2: Set up Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      # Step 3: Run unit tests on GitHub Actions runner
       - name: Run unit tests
         run: python -m unittest -v
 
-      # Step 4: Build Docker image
       - name: Build Docker image
-        run: docker build -t calculator:latest .
+        run: docker build -t calculator .
 
-      # Step 5: Run unit tests inside Docker container
       - name: Run tests inside Docker
-        run: docker run --rm calculator:latest
-
-      # Step 6: Set up AWS SAM CLI
-      - name: Set up AWS SAM CLI
-        uses: aws-actions/setup-sam@v2
-
-      - name: Debug GitHub OIDC configuration
-        env:
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_REF: ${{ github.ref }}
-          GITHUB_REF_TYPE: ${{ github.ref_type }}
-          GITHUB_EVENT_NAME: ${{ github.event_name }}
-        run: |
-          echo "Repository: $GITHUB_REPOSITORY"
-          echo "Branch or ref: $GITHUB_REF"
-          echo "Ref type: $GITHUB_REF_TYPE"
-          echo "Event: $GITHUB_EVENT_NAME"
-
-      - name: Inspect GitHub OIDC claims
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const token = await core.getIDToken('sts.amazonaws.com');
-            const payload = JSON.parse(
-              Buffer.from(token.split('.')[1], 'base64url').toString()
-            );
-
-            console.log('OIDC issuer:', payload.iss);
-            console.log('OIDC audience:', payload.aud);
-            console.log('OIDC subject:', payload.sub);
-            console.log('Repository:', payload.repository);
-            console.log('Ref:', payload.ref);
-            
-      # Step 7: Configure AWS credentials using GitHub OIDC
-      - name: Configure AWS credentials using OIDC
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: ap-south-1
-          debug: true
-
-      # Step 8: Verify AWS authentication
-      - name: Verify AWS identity
-        run: aws sts get-caller-identity
-
-      # Step 9: Validate SAM template
-      - name: Validate SAM template
-        run: sam validate --lint
-
-      # Step 10: Build SAM application
-      - name: Build SAM application
-        run: sam build
-
-      # Step 11: Deploy application to AWS
+        run: docker run --rm calculator
