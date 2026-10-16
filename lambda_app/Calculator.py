@@ -1,19 +1,43 @@
 
+def validate_inputs(num1, num2):
+    for num in (num1, num2):
+        if isinstance(num, bool) or not isinstance(num, int):
+            raise ValueError("Inputs must be integers.")
+
+
 def add(num1, num2):
+    validate_inputs(num1, num2)
+    if num1 < 0 or num2 < 0:
+        raise ValueError("Inputs cannot be negative.")
     return num1 + num2
 
 
 def subtract(num1, num2):
+    validate_inputs(num1, num2)
+    if num1 <= 0 or num2 <= 0:
+        raise ValueError("Inputs must be positive integers.")
     return num1 - num2
 
 
 def multiply(num1, num2):
+    validate_inputs(num1, num2)
+    if num1 <= 0 or num2 <= 0:
+        raise ValueError("Inputs must be positive integers.")
     return num1 * num2
 
 
 def divide(num1, num2):
+    validate_inputs(num1, num2)
+
+    if num1 <= 0:
+        raise ValueError("First number must be a positive integer.")
+
     if num2 == 0:
         return "Error: Division by zero is not allowed."
+
+    if num2 < 0:
+        raise ValueError("Second number must be a positive integer.")
+
     return num1 / num2
 
 
@@ -26,23 +50,30 @@ def main():
 
     choice = input("Choose an operation (1/2/3/4): ")
 
-    num1 = float(input("Enter first number: "))
-    num2 = float(input("Enter second number: "))
+    try:
+        num1 = int(input("Enter first number: "))
+        num2 = int(input("Enter second number: "))
+    except ValueError:
+        print("Please enter valid integers.")
+        return
 
-    if choice == "1":
-        print("Result:", add(num1, num2))
-    elif choice == "2":
-        print("Result:", subtract(num1, num2))
-    elif choice == "3":
-        print("Result:", multiply(num1, num2))
-    elif choice == "4":
-        result = divide(num1, num2)
-        if isinstance(result, str):
-            print(result)
+    try:
+        if choice == "1":
+            result = add(num1, num2)
+        elif choice == "2":
+            result = subtract(num1, num2)
+        elif choice == "3":
+            result = multiply(num1, num2)
+        elif choice == "4":
+            result = divide(num1, num2)
         else:
-            print("Result:", result)
-    else:
-        print("Invalid choice. Please select 1, 2, 3, or 4.")
+            print("Invalid choice. Please select 1, 2, 3, or 4.")
+            return
+
+        print("Result:", result)
+
+    except ValueError as error:
+        print("Error:", error)
 
 
 if __name__ == "__main__":

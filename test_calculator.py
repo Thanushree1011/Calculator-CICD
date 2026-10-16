@@ -1,6 +1,6 @@
 
 import unittest
-from calculator import add, subtract, multiply, divide
+from lambda_app.Calculator import add, subtract, multiply, divide
 
 
 class TestCalculator(unittest.TestCase):

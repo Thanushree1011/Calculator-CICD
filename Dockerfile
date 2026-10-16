@@ -3,7 +3,9 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-COPY calculator.py ./calculator.py
-COPY test_calculator.py ./test_calculator.py
+COPY lambda_app/ ./lambda_app/
+COPY test_calculator.py .
 
-CMD ["python", "-m", "unittest", "-v"]
+ENV PYTHONPATH=/app
+
+CMD ["python", "-m", "unittest", "discover", "-v"]
