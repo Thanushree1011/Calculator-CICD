@@ -31,4 +31,4 @@ jobs:
         run: docker build -t calculator .
 
       - name: Run tests inside Docker
-        run: docker run --rm calculator
+        run: docker run  calculator
